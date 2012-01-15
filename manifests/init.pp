@@ -15,7 +15,8 @@ class ruby($version="1.9.3-p0") {
   exec { "alternatives-ruby-$version":
     command => "update-alternatives --install /usr/bin/ruby ruby /opt/ruby-$version/bin/ruby 10 --slave /usr/bin/irb irb /opt/ruby-$version/bin/irb && update-alternatives --set ruby /opt/ruby-$version/bin/ruby",
     unless => "test /etc/alternatives/ruby -ef /opt/ruby-$version/bin/ruby && test /etc/alternatives/irb -ef /opt/ruby-$version/bin/irb",
-    path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"]
+    path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
+    require => Sourceinstall["ruby-$version"]
   }
   exec { "alternatives-gem-$version":
     command => "update-alternatives --install /usr/bin/gem gem /opt/ruby-$version/bin/gem 10 && update-alternatives --set gem /opt/ruby-$version/bin/gem",
