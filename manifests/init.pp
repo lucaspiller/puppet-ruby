@@ -1,4 +1,10 @@
-class ruby($version="1.9.3-p0") {
+class ruby($version = "1.9.3-p0") {
+  rubyinstall { "$version": }
+}
+
+define rubyinstall {
+  $version = $title
+
   package { "libyaml-dev":
     ensure => latest
   }
