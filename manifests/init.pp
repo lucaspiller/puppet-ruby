@@ -1,15 +1,17 @@
-class ruby($version = "1.9.3-p0") {
-  rubyinstall { "$version": }
+class ruby($version = "1.9.3-p0", $url = "http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-$version.tar.gz") {
+  rubyinstall { "$version":
+    url => $url
+  }
 }
 
-define rubyinstall {
+define rubyinstall($url) {
   $version = $title
 
   package { "libyaml-dev":
     ensure => latest
   }
   sourceinstall { "ruby-$version":
-    tarball => "http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-$version.tar.gz",
+    tarball => $url,
     prefix => "/opt/ruby-$version",
     flags => "",
     bootstrap => "sh -c 'echo -e fcntl\\\\\\\\nopenssl\\\\\\\\nreadline\\\\\\\\nzlib >ext/Setup'",

@@ -27,9 +27,14 @@ To install and configure Ruby, include the module:
 You can override defaults in the Nginx config by including
 the module with this special syntax:
 
-    class { nginx: version => '1.9.2-p290' }
+    class { ruby: version => '1.9.2-p290' }
 
-Note that this hasn't been tested with Ruby 1.8. If you find any issues, send a pull request :)
+To use Ruby 1.8, you also need to specify the URL the source package can be downloaded from:
+
+    class { ruby:
+        version => '1.8.6-p383',
+        url     => 'http://ftp.ruby-lang.org/pub/ruby/1.8/ruby-1.8.6-p383.tar.gz'
+    }
 
 Footnotes
 -----------
