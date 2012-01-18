@@ -27,13 +27,13 @@ define rubyinstall {
 
   exec { "alternatives-ruby-$version":
     command => "update-alternatives --quiet --install /usr/bin/ruby ruby /opt/ruby-$version/bin/ruby 10 --slave /usr/bin/irb irb /opt/ruby-$version/bin/irb && update-alternatives --quiet --set ruby /opt/ruby-$version/bin/ruby",
-    unless => "test /etc/alternatives/ruby -ef /opt/ruby-$version/bin/ruby && test /etc/alternatives/irb -ef /opt/ruby-$version/bin/irb",
+    unless => "test /usr/bin/ruby -ef /opt/ruby-$version/bin/ruby && test /usr/bin/irb -ef /opt/ruby-$version/bin/irb",
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
     require => Exec["ruby-install-$version"]
   }
   exec { "alternatives-gem-$version":
     command => "update-alternatives --quiet --install /usr/bin/gem gem /opt/ruby-$version/bin/gem 10 && update-alternatives --quiet --set gem /opt/ruby-$version/bin/gem",
-    unless => "test /etc/alternatives/gem -ef /opt/ruby-$version/bin/gem",
+    unless => "test /usr/bin/gem -ef /opt/ruby-$version/bin/gem",
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
     require => Exec["alternatives-ruby-$version"]
   }
@@ -47,7 +47,7 @@ define rubyinstall {
   }
   exec { "alternatives-bundle-$version":
     command => "update-alternatives --quiet --install /usr/bin/bundle bundle /opt/ruby-$version/bin/bundle 10 && update-alternatives --quiet --set bundle /opt/ruby-$version/bin/bundle",
-    unless => "test /etc/alternatives/bundle -ef /opt/ruby-$version/bin/bundle",
+    unless => "test /usr/bin/bundle -ef /opt/ruby-$version/bin/bundle",
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
     require => Exec["gem-install-bundler-$version"]
   }
