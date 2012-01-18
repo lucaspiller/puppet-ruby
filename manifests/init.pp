@@ -1,40 +1,39 @@
-class ruby($version = "1.9.3-p0", $url = "http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-$version.tar.gz") {
-  rubyinstall { "$version":
-    url => $url
-  }
+class ruby($version = "1.9.3-p0") {
+  rubyinstall { "$version": }
 }
 
-define rubyinstall($url) {
-  $version = $title
-
-  package { "libyaml-dev":
-    ensure => latest
+define rubyinstall {
+  package {
+    "curl":
+      ensure => present;
+    "rake":
+      ensure => present
   }
-  sourceinstall { "ruby-$version":
-    tarball => $url,
-    prefix => "/opt/ruby-$version",
-    flags => "",
-    bootstrap => "sh -c 'echo -e fcntl\\\\\\\\nopenssl\\\\\\\\nreadline\\\\\\\\nzlib >ext/Setup'",
-    require => [
-      Package["libyaml-dev"]
-    ]
+
+  exec { "ruby-build-install":
+    command => "wget -qO- https://github.com/sstephenson/ruby-build/tarball/master | tar xzv && mv /tmp/sstephenson-ruby-build* /opt/ruby-build",
+    cwd => "/tmp",
+    creates => "/opt/ruby-build",
+    require => Package["curl"],
+    path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"]
+  }
+
+  exec { "ruby-install-$version":
+    command => "/opt/ruby-build/bin/ruby-build $version /opt/ruby-$version",
+    creates => "/opt/ruby-$version",
+    path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
+    require => Exec["ruby-build-install"]
   }
 
   exec { "alternatives-ruby-$version":
     command => "update-alternatives --install /usr/bin/ruby ruby /opt/ruby-$version/bin/ruby 10 --slave /usr/bin/irb irb /opt/ruby-$version/bin/irb && update-alternatives --set ruby /opt/ruby-$version/bin/ruby",
     unless => "test /etc/alternatives/ruby -ef /opt/ruby-$version/bin/ruby && test /etc/alternatives/irb -ef /opt/ruby-$version/bin/irb",
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
-    require => Sourceinstall["ruby-$version"]
+    require => Exec["ruby-install-$version"]
   }
   exec { "alternatives-gem-$version":
     command => "update-alternatives --install /usr/bin/gem gem /opt/ruby-$version/bin/gem 10 && update-alternatives --set gem /opt/ruby-$version/bin/gem",
     unless => "test /etc/alternatives/gem -ef /opt/ruby-$version/bin/gem",
-    path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
-    require => Exec["alternatives-ruby-$version"]
-  }
-  exec { "alternatives-rake-$version":
-    command => "update-alternatives --install /usr/bin/rake rake /opt/ruby-$version/bin/rake 10 && update-alternatives --set rake /opt/ruby-$version/bin/rake",
-    unless => "test /etc/alternatives/rake -ef /opt/ruby-$version/bin/rake",
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
     require => Exec["alternatives-ruby-$version"]
   }
