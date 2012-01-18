@@ -14,7 +14,10 @@ define rubyinstall {
     command => "wget -qO- https://github.com/sstephenson/ruby-build/tarball/master | tar xzv && mv /tmp/sstephenson-ruby-build* /opt/ruby-build",
     cwd => "/tmp",
     creates => "/opt/ruby-build",
-    require => Package["curl"],
+    require => [
+      Package["curl"],
+      Package["rake"]
+    ],
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"]
   }
 
