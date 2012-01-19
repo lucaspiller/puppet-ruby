@@ -4,6 +4,8 @@ class ruby($version = "1.9.3-p0") {
 
 define rubyinstall {
   package {
+    "build-essential":
+      ensure => present;
     "curl":
       ensure => present;
     "rake":
@@ -16,7 +18,8 @@ define rubyinstall {
     creates => "/opt/ruby-build",
     require => [
       Package["curl"],
-      Package["rake"]
+      Package["rake"],
+      Package["build-essential"]
     ],
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"]
   }
