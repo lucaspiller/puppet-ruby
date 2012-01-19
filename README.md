@@ -25,7 +25,7 @@ the module with this special syntax:
 
     class { ruby: version => '1.9.2-p290' }
 
-This module uses [ruby-build](https://github.com/sstephenson/ruby-build) to install Ruby and any related tools (e.g. Rubygems), as such it supports any of the [definitions ruby-build supports](https://github.com/sstephenson/ruby-build/tree/master/share/ruby-build). For example:
+This module uses [ruby-build](https://github.com/sstephenson/ruby-build) to install Ruby and any related tools (e.g. Rubygems), as such it supports any of the [definitions ruby-build supports](https://github.com/sstephenson/ruby-build/tree/master/share/ruby-build). For example to instal Ruby Enterprise Edition:
 
     class { ruby: version => 'ree-1.8.7-2011.12' }
 
@@ -34,4 +34,4 @@ It doesn't deal with other dependencies though, so if you want to use JRuby you'
 Footnotes
 -----------
 
-This will also install [Bundler](http://gembundler.com/), and setup alternatives so that /usr/bin/ruby points to this version. If you don't like that feel free to fork it and make it optional, I'll happily accept a pull request for this. [ruby-build](https://github.com/sstephenson/ruby-build) will be installed into /opt/ruby-build.
+This will also install [Bundler](http://gembundler.com/), and setup alternatives so that `/usr/bin/ruby` points to this version. If you don't like that feel free to fork it and make it optional, I'll happily accept a pull request for this. [ruby-build](https://github.com/sstephenson/ruby-build) will be installed into `/opt/ruby-build`.
