@@ -28,7 +28,8 @@ define rubyinstall {
     command => "/opt/ruby-build/bin/ruby-build $version /opt/ruby-$version",
     creates => "/opt/ruby-$version",
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
-    require => Exec["ruby-build-install"]
+    require => Exec["ruby-build-install"],
+    timeout => 0
   }
 
   exec { "alternatives-ruby-$version":
