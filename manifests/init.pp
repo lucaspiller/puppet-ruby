@@ -6,6 +6,16 @@ define rubyinstall {
   package {
     "build-essential":
       ensure => present;
+    "libssl-dev":
+      ensure => present;
+    "libreadline6":
+      ensure => present;
+    "libreadline6-dev":
+      ensure => present;
+    "zlib1g":
+      ensure => present;
+    "zlib1g-dev":
+      ensure => present;
     "curl":
       ensure => present;
     "rake":
@@ -19,7 +29,12 @@ define rubyinstall {
     require => [
       Package["curl"],
       Package["rake"],
-      Package["build-essential"]
+      Package["build-essential"],
+      Package["libssl-dev"],
+      Package["libreadline6"],
+      Package["libreadline6-dev"],
+      Package["zlib1g"],
+      Package["zlib1g-dev"]
     ],
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"]
   }
@@ -28,7 +43,8 @@ define rubyinstall {
     command => "/opt/ruby-build/bin/ruby-build $version /opt/ruby-$version",
     creates => "/opt/ruby-$version",
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
-    require => Exec["ruby-build-install"]
+    require => Exec["ruby-build-install"],
+    timeout => 0
   }
 
   exec { "alternatives-ruby-$version":
