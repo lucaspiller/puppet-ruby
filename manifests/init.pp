@@ -1,4 +1,4 @@
-class ruby($version = "1.9.3-p0") {
+class ruby($version = "1.9.3-p327") {
   rubyinstall { "$version": }
 }
 
