@@ -2,7 +2,7 @@ class ruby($version = "1.9.3-p327") {
   rubyinstall { "$version": }
 }
 
-define rubyinstall {
+define rubyinstall($version = $title) {
   package {
     "build-essential":
       ensure => present;
