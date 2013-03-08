@@ -35,3 +35,8 @@ Footnotes
 -----------
 
 This will also install [Bundler](http://gembundler.com/), and setup alternatives so that `/usr/bin/ruby` points to this version. If you don't like that feel free to fork it and make it optional, I'll happily accept a pull request for this. [ruby-build](https://github.com/sstephenson/ruby-build) will be installed into `/opt/ruby-build`.
+
+License
+-------
+
+Released under the *MIT License*, see [LICENSE.md](LICENSE.md) for details.
