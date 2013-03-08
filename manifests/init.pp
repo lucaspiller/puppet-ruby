@@ -18,16 +18,20 @@ define rubyinstall($version = $title) {
       ensure => present;
     "curl":
       ensure => present;
+    "git":
+      ensure => present;
     "rake":
       ensure => present
   }
 
-  exec { "ruby-build-install":
-    command => "wget -qO- https://github.com/sstephenson/ruby-build/tarball/master | tar xzv && mv /tmp/sstephenson-ruby-build* /opt/ruby-build",
-    cwd => "/tmp",
-    creates => "/opt/ruby-build",
+  # The rm at the start is legacy, as previous versions of this plugin
+  # used to download the package as a zip file rather than cloning :(
+  exec { "ruby-build-checkout":
+    command => "rm -Rf /opt/ruby-build && git clone https://github.com/sstephenson/ruby-build /opt/ruby-build",
+    creates => "/opt/ruby-build/.git",
     require => [
       Package["curl"],
+      Package["git"],
       Package["rake"],
       Package["build-essential"],
       Package["libssl-dev"],
@@ -37,13 +41,22 @@ define rubyinstall($version = $title) {
       Package["zlib1g-dev"]
     ],
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"]
+    timeout => 0
+  }
+
+  exec { "ruby-build-update":
+    command => "git checkout -f && git pull origin master",
+    cwd     => "/opt/ruby-build",
+    require => Exec["ruby-build-checkout"],
+    path    => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
+    timeout => 0
   }
 
   exec { "ruby-install-$version":
     command => "/opt/ruby-build/bin/ruby-build $version /opt/ruby-$version",
     creates => "/opt/ruby-$version",
     path => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
-    require => Exec["ruby-build-install"],
+    require => Exec["ruby-build-update"],
     timeout => 0
   }
 
