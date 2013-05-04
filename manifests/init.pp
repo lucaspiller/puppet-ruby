@@ -1,27 +1,13 @@
 class ruby($version = "2.0.0-p0") {
+  include ruby::prereqs
+
   rubyinstall { "$version": }
+
 }
 
 define rubyinstall($version = $title) {
-  package {
-    "build-essential":
-      ensure => present;
-    "libssl-dev":
-      ensure => present;
-    "libreadline6":
-      ensure => present;
-    "libreadline6-dev":
-      ensure => present;
-    "zlib1g":
-      ensure => present;
-    "zlib1g-dev":
-      ensure => present;
-    "curl":
-      ensure => present;
-    "git":
-      ensure => present;
-    "rake":
-      ensure => present
+  package { $packages:
+    ensure => installed,
   }
 
   # The rm at the start is legacy, as previous versions of this plugin
@@ -29,19 +15,9 @@ define rubyinstall($version = $title) {
   exec { "ruby-build-checkout":
     command => "rm -Rf /opt/ruby-build && git clone https://github.com/sstephenson/ruby-build /opt/ruby-build",
     creates => "/opt/ruby-build/.git",
-    require => [
-      Package["curl"],
-      Package["git"],
-      Package["rake"],
-      Package["build-essential"],
-      Package["libssl-dev"],
-      Package["libreadline6"],
-      Package["libreadline6-dev"],
-      Package["zlib1g"],
-      Package["zlib1g-dev"]
-    ],
+    require => $packages,
     path    => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
-    timeout => 0
+    timeout => 0,
   }
 
   exec { "ruby-build-update":
