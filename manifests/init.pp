@@ -16,6 +16,7 @@ define rubyinstall($version = $title) {
     creates => "/opt/ruby-build/.git",
     path    => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
     timeout => 0,
+    require => Package[$packages],
   }
 
   exec { "ruby-build-update":
