@@ -7,13 +7,17 @@ class ruby::prereqs {
       }
 
     centos: {
-      $packages = [ "gcc", "g++", "make", "automake", "autoconf", "curl-devel", 
-      "openssl-devel", "zlib-devel", "httpd-devel", "apr-devel", "apr-util-devel", "sqlite-devel",]
+      $packages = [ "gcc", "make", "automake", "autoconf", "libcurl-devel", 
+      "openssl-devel", "zlib-devel","curl", "git",] 
     }
     
     default: {
       fail("unsupported operating system, patches welcome")
     }
 
+  }
+
+  package { $packages:
+    ensure => installed,
   }
 }
