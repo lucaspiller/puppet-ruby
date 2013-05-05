@@ -10,19 +10,10 @@ define rubyinstall($version = $title) {
 
   # The rm at the start is legacy, as previous versions of this plugin
   # used to download the package as a zip file rather than cloning :(
-  exec { 'rbenv-checkout':
-    command => "rm -Rf /opt/ruby-build && git clone https://github.com/sstephenson/rbenv.git /opt/rbenv",
-    creates => "/opt/rbenv/.git",
-    require => Package[$packages],
-    path    => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
-    timeout => 0,
-  }
-
 
   exec { 'ruby-build-checkout':
     command => "rm -Rf /opt/ruby-build && git clone https://github.com/sstephenson/ruby-build /opt/ruby-build",
     creates => "/opt/ruby-build/.git",
-    require => Exec['rbenv-checkout'],
     path    => ["/usr/sbin", "/usr/bin", "/sbin", "/bin"],
     timeout => 0,
   }
@@ -44,6 +35,18 @@ define rubyinstall($version = $title) {
   }
 
   case $operatingsystem {
+    'RedHat', 'Centos', 'Ubuntu': {
+      #set ruby path
+      file { "/etc/profile.d/ruby.sh":
+        mode    => 0755,
+        owner   => 'root',
+        group   => 'root',
+        content => "pathmunge /opt/ruby-$version/bin",
+        require => Exec["ruby-install-$version"],
+      }
+    }
+
+
     'Ubuntu': {
       exec { "alternatives-ruby-$version":
         command => "update-alternatives --quiet --install /usr/bin/ruby ruby /opt/ruby-$version/bin/ruby 10 --slave /usr/bin/irb irb /opt/ruby-$version/bin/irb && update-alternatives --quiet --set ruby /opt/ruby-$version/bin/ruby",
