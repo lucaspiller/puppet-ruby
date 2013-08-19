@@ -3,9 +3,14 @@ class ruby($version = "2.0.0-p0") {
 }
 
 define rubyinstall($version = $title) {
-  package {
+  if ! defined(Package['build-essential']) {
+    package {
     "build-essential":
       ensure => present;
+    }
+  }
+
+  package {
     "libssl-dev":
       ensure => present;
     "libreadline6":
